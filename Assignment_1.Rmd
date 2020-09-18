@@ -37,15 +37,15 @@ is.data.frame(clim_tree_data)
 subset_clim <- clim_tree_data %>% 
   group_by(site, month, year) %>%
   summarize(mean(tavg, na.rm = TRUE))
-subset_clim
+head(subset_clim)
+summary(subset_clim)
 
 subset_clim_2 <- clim_tree_data %>% 
   group_by(site, elev, month, year) %>%
   summarize(mean(tavg, na.rm = TRUE))
 subset_clim_2
-
 head(subset_clim_2)
-summary(subset_clim)
+summary(subset_clim_2)
 
 
 names(subset_clim)[names(subset_clim) == "mean(tavg, na.rm = TRUE)"] <- "t_average"
@@ -135,17 +135,10 @@ summary(dec_lm)
 #Question 4: Plot the relationship
 ```{r}
 
-may_plot <- ggplot(may_data, aes(x = elev, y= t_average)) + geom_point() +geom_smooth(method = lm)
+may_plot <- ggplot(may_data, aes(x = elev, y= t_average)) + geom_point() + geom_smooth(method = lm) + xlab("Elevation") +ylab("Temperature")
 may_plot
-
-dec_plot <-  ggplot(dec_data, aes(x = elev, y= t_average)) + geom_point() +geom_smooth(method = lm)
+dec_plot <-  ggplot(dec_data, aes(x = elev, y= t_average)) + geom_point() +geom_smooth(method = lm) + xlab("Elevation") +ylab("Temperature")
 dec_plot
-#without ggplot
-plot(may_data$elev, may_data$t_average, xlab="Elevation", ylab ="Temp Average")
-abline(lm(may_data$elev~may_data$t_average), col = "red")
-
-plot(dec_data$elev, dec_data$t_average, xlab="Elevation", ylab ="Temp Average")
-abline(lm(dec_data$elev~dec_data$t_average), col = "red")
 
 ```
 #Question 5: Produce diagnostic  plots characterizing the fit of the linear model and its assumptions
@@ -166,14 +159,13 @@ plot(dec_lm)
 ```{r}
 
 lapserate.function<- function(l){
-  for(i in 1:length(subset_clim_4$month) )#192 long?
+  for(i in 1:length(subset_clim_4$month))#192 long?
     lr_lm<- lm(subset_clim_4$elev~subset_clim_4$t_average)# needs for each month
     
     
-    return(matrix(subset_clim_4$name,lr_lm$coef[2],summary(lr_lm)$r.squared)
-    return(
-      ggplot(subset_clim_4, aes(month, )) + geom_point(lr_lm$coef[2]) +
-        geompoint(summary(lr_lm)$r.squared)) #my ggplot skills sucks
+    print(c(subset_clim_4$month,lr_lm$coef[2],summary(lr_lm)$r.squared))
+    print(ggplot(subset_clim_4, aes(x = subset_clim_4$month, y = lr_lm$coef[2])) + geom_point() + geom_line())
+    
 }
 
 #not final calculations (i.e. "play space")
